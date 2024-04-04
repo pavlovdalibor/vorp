@@ -22,4 +22,5 @@ const screenOptions = {
     headerTitleStyle: {
         color: "white",
     },
+    tabBarShowLabel: false,
 };

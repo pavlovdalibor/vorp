@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     loadingScreen: {
         justifyContent: "space-between",
         alignItems: "center",
-        height: "100%",
+        flexGrow: 1,
         gap: 10,
         padding: Constant.statusBarHeight + 50,
     },

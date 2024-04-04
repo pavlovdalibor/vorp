@@ -8,7 +8,11 @@ import { useFonts } from "expo-font";
 
 import { Navigator, Screen } from "./components/TabNavigator";
 import { isAuthenticated } from "./api";
-import * as SecureStore from "expo-secure-store";
+import { UserProvider } from "./context/UserContext";
+
+import { Ionicons } from "@expo/vector-icons";
+import { EntriesScreen } from "./screens/EntriesScreen";
+import { EntriesProvider } from "./context/EntriesContext";
 
 export default function App() {
     const [Loading, SetLoading] = useState(true);
@@ -21,10 +25,10 @@ export default function App() {
                 SetLoading(false);
             }
         })();
-    }, [FontLoaded, Authenticated]);
+    }, [FontLoaded]);
 
     function onAuthenticated() {
-        SetAuthenticated(isAuthenticated());
+        SetAuthenticated(true);
     }
 
     return (
@@ -36,17 +40,56 @@ export default function App() {
                     return <LoginScreen onAuthenticated={onAuthenticated} />;
                 } else {
                     return (
-                        <>
-                            <NavigationContainer>
-                                <Navigator>
-                                    <Screen
-                                        component={HomeScreen}
-                                        name="Willkommen"
-                                    />
-                                </Navigator>
-                            </NavigationContainer>
-                            <StatusBar style="light" />
-                        </>
+                        <EntriesProvider>
+                            <UserProvider>
+                                <NavigationContainer>
+                                    <Navigator>
+                                        <Screen
+                                            component={HomeScreen}
+                                            name="Willkommen"
+                                            options={{
+                                                tabBarIcon: ({
+                                                    focused,
+                                                    color,
+                                                    size,
+                                                }) => (
+                                                    <Ionicons
+                                                        name="school"
+                                                        size={30}
+                                                        color={
+                                                            focused
+                                                                ? "#a03bff"
+                                                                : "#cccccc"
+                                                        }
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                        <Screen
+                                            component={EntriesScreen}
+                                            name="Zusammenfassungen"
+                                            options={{
+                                                tabBarIcon: ({
+                                                    focused,
+                                                    color,
+                                                    size,
+                                                }) => (
+                                                    <Ionicons
+                                                        name="book"
+                                                        size={30}
+                                                        color={
+                                                            focused
+                                                                ? "#a03bff"
+                                                                : "#cccccc"
+                                                        }
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    </Navigator>
+                                </NavigationContainer>
+                            </UserProvider>
+                        </EntriesProvider>
                     );
                 }
             })()}

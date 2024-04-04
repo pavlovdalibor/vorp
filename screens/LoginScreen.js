@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import { login } from "../api";
+import { StatusBar } from "expo-status-bar";
 
 export function LoginScreen({ onAuthenticated }) {
     const [Email, SetEmail] = useState(undefined);
@@ -19,15 +20,27 @@ export function LoginScreen({ onAuthenticated }) {
 
     return (
         <View style={styles.loginScreen}>
+            <StatusBar style="dark" />
             <Text style={styles.title}>
                 Willkommen zu {"\n"}
                 <Text style={styles.logo}>vorp</Text>
             </Text>
             <Text style={styles.indicator}>Bitte loggen Sie sich ein.</Text>
             <View style={styles.form}>
-                <Input setter={SetEmail} title="Email" />
-                <Input setter={SetPassword} title="Passwort" hidden />
-                <Button text="Einloggen" onPress={attemptLogin} />
+                <Input
+                    setter={SetEmail}
+                    title="Email"
+                    placeholder="max.muster@ksb-sg.ch"
+                />
+                <Input
+                    setter={SetPassword}
+                    title="Passwort"
+                    hidden
+                    placeholder="testuser"
+                />
+                <Button onPress={attemptLogin}>
+                    <Text>Einloggen</Text>
+                </Button>
             </View>
         </View>
     );
@@ -37,7 +50,7 @@ const styles = StyleSheet.create({
     loginScreen: {
         justifyContent: "center",
         alignItems: "center",
-        height: "100%",
+        flexGrow: 1,
         marginHorizontal: 40,
     },
     title: {

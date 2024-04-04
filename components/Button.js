@@ -1,12 +1,32 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Children, cloneElement } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 
-export function Button({ text, onPress, bg = "#a03bff", fg = "white" }) {
+export function Button({
+    children,
+    onPress,
+    bg = "#a03bff",
+    fg = "white",
+    border = false,
+    flex = false,
+}) {
     return (
         <Pressable
-            style={[styles.button, { backgroundColor: bg }]}
+            style={[
+                styles.button,
+                {
+                    backgroundColor: bg,
+                    borderWidth: border ? 1 : 0,
+                    borderColor: fg,
+                    flexGrow: flex ? 1 : 0,
+                },
+            ]}
             onPress={onPress}
         >
-            <Text style={{ color: fg }}>{text}</Text>
+            {Children.map(children, (child) =>
+                cloneElement(child, {
+                    style: [{ color: fg }, child.props.style, styles.text],
+                })
+            )}
         </Pressable>
     );
 }
@@ -17,6 +37,11 @@ const styles = StyleSheet.create({
         padding: 12,
         justifyContent: "center",
         alignItems: "center",
-        width: "100%",
+    },
+    text: {
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "row",
+        gap: 10,
     },
 });
