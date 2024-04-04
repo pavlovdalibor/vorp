@@ -1,20 +1,56 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import VarelaRound from "./assets/varela-round.ttf";
+import { StatusBar } from "expo-status-bar";
+
+import { LoadingScreen, HomeScreen, LoginScreen } from "./screens";
+import { useFonts } from "expo-font";
+
+import { Navigator, Screen } from "./components/TabNavigator";
+import { isAuthenticated } from "./api";
+import * as SecureStore from "expo-secure-store";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+    const [Loading, SetLoading] = useState(true);
+    const [Authenticated, SetAuthenticated] = useState(isAuthenticated());
+    const [FontLoaded] = useFonts({ "Varela Round": VarelaRound });
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    useEffect(() => {
+        (async () => {
+            if (FontLoaded) {
+                SetLoading(false);
+            }
+        })();
+    }, [FontLoaded, Authenticated]);
+
+    function onAuthenticated() {
+        SetAuthenticated(isAuthenticated());
+    }
+
+    return (
+        <>
+            {(() => {
+                if (Loading) {
+                    return <LoadingScreen />;
+                } else if (!Authenticated) {
+                    return <LoginScreen onAuthenticated={onAuthenticated} />;
+                } else {
+                    return (
+                        <>
+                            <NavigationContainer>
+                                <Navigator>
+                                    <Screen
+                                        component={HomeScreen}
+                                        name="Willkommen"
+                                    />
+                                </Navigator>
+                            </NavigationContainer>
+                            <StatusBar style="light" />
+                        </>
+                    );
+                }
+            })()}
+            <StatusBar style="light" />
+        </>
+    );
+}
