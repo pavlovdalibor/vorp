@@ -29,6 +29,7 @@ export default function App() {
 
     function onAuthenticated() {
         SetAuthenticated(true);
+        console.log("2");
     }
 
     return (
